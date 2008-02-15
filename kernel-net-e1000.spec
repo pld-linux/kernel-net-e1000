@@ -5,7 +5,6 @@
 %bcond_without	smp		# don't build SMP module
 %bcond_without	up		# don't build UP module
 %bcond_with	verbose		# verbose build (V=1)
-%bcond_with	grsec_kernel	# build for kernel-grsecurity
 
 %ifarch sparc
 %undefine	with_smp
@@ -14,20 +13,16 @@
 %if %{without kernel}
 %undefine with_dist_kernel
 %endif
-%if %{with kernel} && %{with dist_kernel} && %{with grsec_kernel}
-%define	alt_kernel	grsecurity
-%endif
 %if "%{_alt_kernel}" != "%{nil}"
 %undefine	with_userspace
 %endif
 
-%define		_rel	7
 %define		pname	e1000
 Summary:	Intel(R) PRO/1000 driver for Linux
 Summary(pl):	Sterownik do karty Intel(R) PRO/1000
 Name:		%{pname}%{_alt_kernel}
 Version:	7.6.12
-Release:	%{_rel}
+Release:	8
 License:	GPL v2
 Group:		Base/Kernel
 Source0:	http://dl.sourceforge.net/e1000/%{pname}-%{version}.tar.gz
@@ -50,14 +45,9 @@ Ten pakiet zawiera sterownik dla Linuksa do kart sieciowych
 %package -n kernel%{_alt_kernel}-net-e1000
 Summary:	Intel(R) PRO/1000 driver for Linux SMP
 Summary(pl):	Sterownik do karty Intel(R) PRO/1000
-Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
+%{?with_dist_kernel:Requires:	kernel%{_alt_kernel}(vermagic) = %{_kernel_ver}}
 Requires(post,postun):	/sbin/depmod
-%if %{with dist_kernel}
-%requires_releq_kernel_up
-Requires(postun):	%releq_kernel_up
-%endif
-Provides:	kernel(e1000)
 Obsoletes:	e1000
 Obsoletes:	linux-net-e1000
 
@@ -72,14 +62,9 @@ Ten pakiet zawiera sterownik dla Linuksa SMP do kart sieciowych
 %package -n kernel%{_alt_kernel}-smp-net-e1000
 Summary:	Intel(R) PRO/1000 driver for Linux SMP
 Summary(pl):	Sterownik do karty Intel(R) PRO/1000
-Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
+%{?with_dist_kernel:Requires:	kernel%{_alt_kernel}-smp(vermagic) = %{_kernel_ver}}
 Requires(post,postun):	/sbin/depmod
-%if %{with dist_kernel}
-%requires_releq_kernel_smp
-Requires(postun):	%releq_kernel_smp
-%endif
-Provides:	kernel(e1000)
 Obsoletes:	e1000
 Obsoletes:	linux-net-e1000
 
