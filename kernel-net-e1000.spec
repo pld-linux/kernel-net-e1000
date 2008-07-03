@@ -19,7 +19,7 @@
 
 %define		pname	e1000
 Summary:	Intel(R) PRO/1000 driver for Linux
-Summary(pl):	Sterownik do karty Intel(R) PRO/1000
+Summary(pl.UTF-8):	Sterownik do karty Intel(R) PRO/1000
 Name:		%{pname}%{_alt_kernel}
 Version:	7.6.12
 Release:	9
@@ -38,13 +38,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 This package contains the Linux driver for the Intel(R) PRO/1000
 family of 10/100/1000 Ethernet network adapters.
 
-%description -l pl
+%description -l pl.UTF-8
 Ten pakiet zawiera sterownik dla Linuksa do kart sieciowych
 10/100/1000Mbit z rodziny Intel(R) PRO/1000.
 
 %package -n kernel%{_alt_kernel}-net-e1000
 Summary:	Intel(R) PRO/1000 driver for Linux SMP
-Summary(pl):	Sterownik do karty Intel(R) PRO/1000
+Summary(pl.UTF-8):	Sterownik do karty Intel(R) PRO/1000
 Group:		Base/Kernel
 %{?with_dist_kernel:Requires:	kernel%{_alt_kernel}(vermagic) = %{_kernel_ver}}
 Requires(post,postun):	/sbin/depmod
@@ -55,13 +55,13 @@ Obsoletes:	linux-net-e1000
 This package contains the Linux SMP driver for the Intel(R) PRO/1000
 family of 10/100/1000 Ethernet network adapters.
 
-%description -n kernel%{_alt_kernel}-net-e1000 -l pl
+%description -n kernel%{_alt_kernel}-net-e1000 -l pl.UTF-8
 Ten pakiet zawiera sterownik dla Linuksa SMP do kart sieciowych
 10/100/1000Mbit z rodziny Intel(R) PRO/1000.
 
 %package -n kernel%{_alt_kernel}-smp-net-e1000
 Summary:	Intel(R) PRO/1000 driver for Linux SMP
-Summary(pl):	Sterownik do karty Intel(R) PRO/1000
+Summary(pl.UTF-8):	Sterownik do karty Intel(R) PRO/1000
 Group:		Base/Kernel
 %{?with_dist_kernel:Requires:	kernel%{_alt_kernel}-smp(vermagic) = %{_kernel_ver}}
 Requires(post,postun):	/sbin/depmod
@@ -72,7 +72,7 @@ Obsoletes:	linux-net-e1000
 This package contains the Linux SMP driver for the Intel(R) PRO/1000
 family of 10/100/1000 Ethernet network adapters.
 
-%description -n kernel%{_alt_kernel}-smp-net-e1000 -l pl
+%description -n kernel%{_alt_kernel}-smp-net-e1000 -l pl.UTF-8
 Ten pakiet zawiera sterownik dla Linuksa SMP do kart sieciowych
 10/100/1000Mbit z rodziny Intel(R) PRO/1000.
 
@@ -91,6 +91,11 @@ EOF
 %install
 rm -rf $RPM_BUILD_ROOT
 %install_kernel_modules -m src/%{pname} -d kernel/drivers/net -n %{pname} -s current
+# blacklist kernel module
+cat > $RPM_BUILD_ROOT/etc/modprobe.d/%{_kernel_ver}/%{pname}.conf <<'EOF'
+blacklist e1000
+alias e1000 e1000-current
+EOF
 
 %clean
 rm -rf $RPM_BUILD_ROOT
